@@ -1,0 +1,108 @@
+# AeroSpace config — place at ~/.aerospace.toml
+# Docs: https://nikitabobko.github.io/AeroSpace/guide
+#
+# Modifier key: alt (option)
+# Quick reference:
+#   alt-h/j/k/l         focus left/down/up/right
+#   alt-shift-h/j/k/l   move window
+#   alt-1..9            switch workspace
+#   alt-shift-1..9      move window to workspace
+#   alt-f               fullscreen
+#   alt-t               tile layout
+#   alt-shift-space     toggle float
+#   alt-shift-r         reload config
+
+start-at-login = true
+
+# Gaps between windows and screen edges (pixels)
+[gaps]
+inner.horizontal = 8
+inner.vertical   = 8
+outer.left       = 8
+outer.right      = 8
+outer.top        = 8
+outer.bottom     = 8
+
+# ── Main mode ─────────────────────────────────────────────────────────────────
+
+[mode.main.binding]
+
+# Focus
+alt-h = 'focus left'
+alt-j = 'focus down'
+alt-k = 'focus up'
+alt-l = 'focus right'
+
+# Move window
+alt-shift-h = 'move left'
+alt-shift-j = 'move down'
+alt-shift-k = 'move up'
+alt-shift-l = 'move right'
+
+# Resize (hold and tap repeatedly)
+alt-minus      = 'resize smart -50'
+alt-equal      = 'resize smart +50'
+
+# Layouts
+alt-t          = 'layout tiles horizontal vertical'  # cycle tile orientations
+alt-shift-t    = 'layout accordion horizontal vertical'
+alt-f          = 'fullscreen'
+alt-shift-space = 'layout floating tiling'           # toggle float
+
+# Split direction for next window
+alt-comma  = 'split horizontal'
+alt-period = 'split vertical'
+
+# Workspaces 1-9
+alt-1 = 'workspace 1'
+alt-2 = 'workspace 2'
+alt-3 = 'workspace 3'
+alt-4 = 'workspace 4'
+alt-5 = 'workspace 5'
+alt-6 = 'workspace 6'
+alt-7 = 'workspace 7'
+alt-8 = 'workspace 8'
+alt-9 = 'workspace 9'
+
+# Move window to workspace
+alt-shift-1 = 'move-node-to-workspace 1'
+alt-shift-2 = 'move-node-to-workspace 2'
+alt-shift-3 = 'move-node-to-workspace 3'
+alt-shift-4 = 'move-node-to-workspace 4'
+alt-shift-5 = 'move-node-to-workspace 5'
+alt-shift-6 = 'move-node-to-workspace 6'
+alt-shift-7 = 'move-node-to-workspace 7'
+alt-shift-8 = 'move-node-to-workspace 8'
+alt-shift-9 = 'move-node-to-workspace 9'
+
+# Move focus between monitors
+alt-shift-tab = 'move-workspace-to-monitor --wrap-around next'
+
+# Enter service mode (for config reload, etc.)
+alt-shift-semicolon = 'mode service'
+
+# ── Service mode ──────────────────────────────────────────────────────────────
+# Press alt-shift-; to enter, esc to exit
+
+[mode.service.binding]
+esc        = 'mode main'
+r          = ['reload-config', 'mode main']
+backspace  = 'close-all-windows-but-current'
+
+# Flatten the current workspace tree (useful when layout gets messy)
+f = ['flatten-workspace-tree', 'mode main']
+
+# ── Window rules ──────────────────────────────────────────────────────────────
+# Force certain apps to always float (system dialogs, etc.)
+
+[[on-window-detected]]
+if.app-id = 'com.apple.systempreferences'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.finder'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.1password.1password'
+run = 'layout floating'

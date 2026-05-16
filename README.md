@@ -1,84 +1,91 @@
 # computer-setup
 
-Automated setup for new Linux installations, with a focus on Fedora 43. This repository helps you track and automate software installation to easily reproduce your preferred setup on new machines.
+Automated setup scripts for new machines. Each platform lives in its own folder.
 
-## Quick Start
-
-### Detect Current System Packages
-
-On your current system, automatically detect and catalog installed software:
-
-```bash
-./detect-packages.sh
+```
+mac/     — macOS setup (Homebrew, Oh My Zsh, CLI tools, apps)
+linux/   — Fedora/Debian/Arch setup (dnf/apt/pacman, Flatpak, Snap)
 ```
 
-This will generate `packages.yml` with all your currently installed DNF packages, Flatpaks, and Snaps. Review and edit the file to remove any packages you don't want to track.
+---
 
-### Fresh Installation
+## Mac
 
-1. Clone this repository:
-   ```bash
-   git clone <your-repo-url>
-   cd computer-setup
-   ```
+### First-time setup
 
-2. Edit `packages.yml` to add your desired software packages (or use `detect-packages.sh` as above)
+```bash
+cd mac
+./install.sh
+```
 
-3. Run the installation script:
-   ```bash
-   ./install.sh
-   ```
+This will:
+1. Install all packages from `Brewfile` via `brew bundle`
+2. Install Oh My Zsh
+3. Configure Zsh plugins (autosuggestions, syntax highlighting, fzf, zoxide, powerlevel10k)
+4. Copy `aerospace.toml` to `~/.aerospace.toml`
 
-## File Structure
+After install, open a new terminal and run `p10k configure` to set up your prompt style.
 
-- `packages.yml` - Software manifest tracking all packages to install
-- `detect-packages.sh` - Scans your system and generates packages.yml
-- `install.sh` - Automated installation script
-- `CLAUDE.md` - Guide for Claude Code when working in this repository
+> **Note:** Set your terminal font to `MesloLGS Nerd Font` for icons to render correctly.
+> AeroSpace requires Accessibility permission — grant it in System Settings → Privacy & Security.
 
-## Tracking New Software
+### Adding packages
 
-When you install new software manually, add it to `packages.yml` under the appropriate section:
+Edit `mac/Brewfile` and add a line under the appropriate section:
 
-- `dnf_packages` - System packages installed via dnf/apt/pacman
-- `flatpak_packages` - Flatpak applications (use full app IDs)
-- `snap_packages` - Snap packages
-- `enable_rpmfusion` - Set to `true` to enable RPM Fusion repos (Fedora)
+```ruby
+brew "tool-name"          # CLI tool
+cask "app-name"           # GUI app
+```
 
-### Example
+Then run `brew bundle --file=mac/Brewfile` to apply.
+
+### Files
+
+| File | Purpose |
+|---|---|
+| `mac/install.sh` | Main installer |
+| `mac/Brewfile` | Declarative package manifest |
+| `mac/aerospace.toml` | AeroSpace tiling WM config (copied to `~/.aerospace.toml`) |
+
+---
+
+## Linux
+
+Targets Fedora 43, with best-effort support for Debian/Ubuntu and Arch.
+
+### Detect currently installed packages
+
+Run this on an existing system to capture what's installed:
+
+```bash
+linux/detect-packages.sh
+```
+
+Generates `linux/packages.yml`. Review and trim anything you don't want to track.
+
+### Fresh installation
+
+```bash
+linux/install.sh
+```
+
+### Adding packages
+
+Edit `linux/packages.yml` under the appropriate section:
 
 ```yaml
 dnf_packages:
-  - git
-  - vim
   - htop
 
 flatpak_packages:
   - org.mozilla.firefox
-  - org.gnome.Builder
 ```
 
-## Portability
+### Files
 
-The installation script detects your Linux distribution and uses the appropriate package manager:
-- Fedora/RHEL: `dnf`
-- Debian/Ubuntu: `apt`
-- Arch Linux: `pacman`
-
-Package names may differ between distributions - you may need to adjust `packages.yml` when switching distros.
-
-## Manual Installation Steps
-
-For software or configurations that can't be automated, document them here:
-
-- [ ] Configure GNOME settings
-- [ ] Import browser bookmarks
-- [ ] Set up SSH keys
-- [ ] Configure git user info
-
-## Future Enhancements
-
-- [ ] Add dotfiles management
-- [ ] System configuration automation (shell settings, desktop environment)
-- [ ] Post-install configuration scripts
-- [ ] Backup and restore user data
+| File | Purpose |
+|---|---|
+| `linux/install.sh` | Main installer |
+| `linux/packages.yml` | Declarative package manifest |
+| `linux/detect-packages.sh` | Scans system and regenerates packages.yml |

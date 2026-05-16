@@ -1,76 +1,72 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code when working with code in this repository.
 
 ## Repository Purpose
 
-This repository automates Linux computer setup, primarily targeting Fedora 43. It provides a declarative way to track installed software and automate fresh installations.
+Cross-platform machine setup automation. Each platform has its own folder with a declarative package manifest and an installer script.
 
-## Architecture
+## Structure
 
-### Core Components
+```
+mac/
+  install.sh        — installs Homebrew packages, Oh My Zsh, Zsh plugins, copies configs
+  Brewfile          — declarative manifest (brew, cask)
+  aerospace.toml    — AeroSpace tiling WM config (installed to ~/.aerospace.toml)
 
-1. **packages.yml** - Declarative software manifest
-   - Organized by installation method (dnf, flatpak, snap)
-   - Simple YAML format for easy editing
-   - Supports repository configuration
-
-2. **detect-packages.sh** - Package detection script
-   - Scans the current system for installed packages
-   - Generates packages.yml automatically
-   - Detects DNF, Flatpak, and Snap packages
-   - Filters out core system packages
-
-3. **install.sh** - Installation automation script
-   - Multi-distro support (Fedora/Debian/Arch detection)
-   - Simple YAML parsing using awk
-   - Idempotent operations with error handling
-   - Color-coded logging output
-
-### Design Principles
-
-- **Declarative over imperative**: Track what should be installed, not how
-- **Portability**: Support multiple package managers for cross-distro compatibility
-- **Safety**: Requires user confirmation before system modifications
-- **Simplicity**: Minimal dependencies (bash, awk, package manager)
-
-## Common Commands
-
-### Detecting currently installed packages
-```bash
-./detect-packages.sh
+linux/
+  install.sh        — installs dnf/apt/pacman packages, Flatpak, Snap
+  packages.yml      — declarative manifest
+  detect-packages.sh — scans a live system and regenerates packages.yml
 ```
 
-### Running the installer
+## Mac
+
+### Design
+
+- **Homebrew** is the single package manager for everything (CLI tools and GUI apps via casks)
+- **Brewfile** is the source of truth — `brew bundle --file=mac/Brewfile` is idempotent
+- **Oh My Zsh** plugins (autosuggestions, syntax highlighting, fzf, zoxide, powerlevel10k) are installed via Homebrew and sourced in `~/.zshrc` by the installer
+- **AeroSpace** (i3-style tiling WM) uses `mac/aerospace.toml` as a versioned starter config
+
+### Common commands
+
 ```bash
-./install.sh
+# Run full setup
+./mac/install.sh
+
+# Install/update packages only
+brew bundle --file=mac/Brewfile
+
+# Reconfigure Zsh prompt
+p10k configure
 ```
 
-### Reviewing what will be installed
+## Linux
+
+### Design
+
+- **packages.yml** is the declarative manifest organized by package manager (dnf, flatpak, snap)
+- **install.sh** does simple awk-based YAML parsing — no external dependencies
+- **detect-packages.sh** auto-generates packages.yml from a live system; it filters out core OS packages to focus on user-installed software
+- Multi-distro: Fedora (dnf), Debian/Ubuntu (apt), Arch (pacman) — package names may differ
+
+### Common commands
+
 ```bash
-cat packages.yml
+# Capture current system state
+./linux/detect-packages.sh
+
+# Run installer on a fresh system
+./linux/install.sh
+
+# Review manifest
+cat linux/packages.yml
 ```
 
-### Making scripts executable (if needed)
-```bash
-chmod +x detect-packages.sh install.sh
-```
+## Design Principles
 
-## Workflow
-
-### Initial Setup
-1. Run `./detect-packages.sh` to capture current system state
-2. Review and edit `packages.yml` to remove unwanted packages
-3. Commit the manifest to git
-
-### Adding New Software
-1. Install it manually first
-2. Run `./detect-packages.sh` to regenerate packages.yml, or
-3. Manually add the package name to the appropriate section in `packages.yml`
-4. Test the installation on a fresh VM/container if possible
-
-## Extension Points
-
-- Additional package managers can be added to `install_*_packages()` functions
-- Post-install hooks can be implemented by parsing the `post_install` section
-- Dotfiles management could be added as a separate script
+- **Declarative over imperative**: track what should be installed, not how
+- **Idempotent**: safe to run installers multiple times
+- **Minimal dependencies**: bash + awk + platform package manager only
+- **No overwrites**: installers skip config files that already exist (show a diff hint instead)

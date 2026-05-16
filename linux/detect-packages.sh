@@ -3,8 +3,9 @@
 
 set -e
 
-OUTPUT_FILE="packages.yml"
-BACKUP_FILE="packages.yml.backup"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+OUTPUT_FILE="$SCRIPT_DIR/packages.yml"
+BACKUP_FILE="$SCRIPT_DIR/packages.yml.backup"
 
 # Colors
 GREEN='\033[0;32m'

@@ -1,0 +1,35 @@
+# Mac Package Manifest (Brewfile)
+# Run: brew bundle --file=mac/Brewfile
+# Or let mac/install.sh handle it
+
+# ── Shell & Terminal ──────────────────────────────────────────────────────────
+brew "zsh-autosuggestions"       # fish-style inline suggestions
+brew "zsh-syntax-highlighting"   # command highlighting before you hit enter
+brew "zsh-completions"           # extra completion definitions
+brew "powerlevel10k"             # fast, feature-rich Zsh prompt theme
+
+# ── CLI Productivity ──────────────────────────────────────────────────────────
+brew "fzf"          # fuzzy finder (powers ctrl-r history, ctrl-t file search)
+brew "zoxide"       # smarter cd — learns your habits, type `z proj` instead of full path
+brew "bat"          # better cat with syntax highlighting
+brew "eza"          # better ls with colors, icons, git status
+brew "ripgrep"      # fast grep replacement (rg)
+brew "fd"           # fast find replacement
+
+# ── Git ───────────────────────────────────────────────────────────────────────
+brew "git"          # newer git than the system one
+brew "gh"           # GitHub CLI
+brew "lazygit"      # TUI for git — visual staging, branching, log
+
+# ── Dev Runtimes ──────────────────────────────────────────────────────────────
+brew "fnm"          # fast Node.js version manager
+brew "pyenv"        # Python version manager
+
+# ── Apps (GUI) ────────────────────────────────────────────────────────────────
+cask "iterm2"       # better terminal (splits, search, profiles)
+cask "raycast"      # launcher/spotlight replacement with extensions
+cask "nikitabobko/tap/aerospace"  # i3-style tiling WM with workspaces and config file
+cask "visual-studio-code"
+
+# ── Fonts ─────────────────────────────────────────────────────────────────────
+cask "font-meslo-lg-nerd-font"   # nerdfont for terminal icons (used by Oh My Zsh themes)
