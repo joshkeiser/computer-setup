@@ -129,6 +129,31 @@ EOF
     fi
 }
 
+# ── 1Password SSH Agent ───────────────────────────────────────────────────────
+
+configure_1password_ssh_agent() {
+    local ssh_config="$HOME/.ssh/config"
+    local agent_sock="~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+
+    if grep -q "1password" "$ssh_config" 2>/dev/null; then
+        log_info "1Password SSH agent already configured in ~/.ssh/config"
+        return
+    fi
+
+    mkdir -p "$HOME/.ssh"
+    chmod 700 "$HOME/.ssh"
+
+    cat >> "$ssh_config" <<EOF
+
+# 1Password SSH agent — keys stored in vault, Touch ID on use
+Host *
+  IdentityAgent $agent_sock
+EOF
+    chmod 600 "$ssh_config"
+    log_info "Configured 1Password SSH agent in ~/.ssh/config"
+    log_warn "1Password: enable the SSH agent in Settings → Developer → Use the SSH agent"
+}
+
 # ── AeroSpace ────────────────────────────────────────────────────────────────
 
 install_aerospace_config() {
@@ -159,10 +184,12 @@ main() {
     install_oh_my_zsh
     configure_zsh_plugins
     install_aerospace_config
+    configure_1password_ssh_agent
 
     log_info "Done! Open a new terminal (or run: source ~/.zshrc) to apply changes."
-    log_warn "For icons to render correctly, set your terminal font to 'MesloLGS Nerd Font'."
+    log_warn "Font: set your terminal font to 'MesloLGS Nerd Font' for icons."
     log_warn "AeroSpace: grant Accessibility permission in System Settings → Privacy & Security."
+    log_warn "1Password: enable SSH agent in Settings → Developer → Use the SSH agent."
 }
 
 main "$@"

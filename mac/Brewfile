@@ -25,6 +25,10 @@ brew "lazygit"      # TUI for git — visual staging, branching, log
 brew "fnm"          # fast Node.js version manager
 brew "pyenv"        # Python version manager
 
+# ── 1Password ────────────────────────────────────────────────────────────────
+# Note: 1Password desktop app installed manually from website (self-updating, skip cask)
+brew "1password-cli"             # op CLI — secret injection, shell plugins, vault access
+
 # ── Apps (GUI) ────────────────────────────────────────────────────────────────
 cask "iterm2"       # better terminal (splits, search, profiles)
 cask "raycast"      # launcher/spotlight replacement with extensions
